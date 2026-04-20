@@ -1,5 +1,7 @@
-import mongoose from "mongoose"
+import mongoose from "mongoose";
 
-const subscriptionSchema = new mongoose.Schema({}, {timestamps: true})
+const subscriptionSchema = new mongoose.Schema({}, {timestamps: true});
 
-export const Subscription = mongoose.model("Subscription", subscriptionSchema)
+export const Subscription = mongoose.model("Subscription", subscriptionSchema);
+
+export { Subscription };
