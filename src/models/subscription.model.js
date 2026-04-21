@@ -4,22 +4,22 @@ const subscriptionSchema = new mongoose.Schema({
     subscriber: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
-        required : true
+        required: true
     },
 
     channel: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
-        required : true
-    },
+        required: true,
 
-    validate : {
-        validator : function(channelId)
-        {
-            return channelId.toString() !== this.subscriber.toString();
-        },
-        message : "You cannot subscribe to yourself"
+        validate: {
+            validator: function (channelId) {
+                return channelId.toString() !== this.subscriber.toString();
+            },
+            message: "You cannot subscribe to yourself"
+        }
     }
+
 }, { timestamps: true });
 
 subscriptionSchema.index(
@@ -32,6 +32,6 @@ subscriptionSchema.index(
     }
 )
 
-export const Subscription = mongoose.model("Subscription", subscriptionSchema);
+const Subscription = mongoose.model("Subscription", subscriptionSchema);
 
 export { Subscription };
