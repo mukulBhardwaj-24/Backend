@@ -1,9 +1,11 @@
 import { Router } from "express";
-import { subscribeChannel } from "../controllers/subscription.controller.js";
+import { subscribeChannel, subscribedChannels, unsubscribeChannel } from "../controllers/subscription.controller.js";
+import { verifyJWT } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
-router.post("/subscribe/:channelId", subscribeChannel);
-router.post("/unsubscribe/:channelId");
+router.route("/subscribe/:channelId").post(verifyJWT, subscribeChannel);
+router.route("/unsubscribe/:channelId").post(verifyJWT, unsubscribeChannel);
+router.route("/channels").get(verifyJWT, subscribedChannels);
 
 export default router;

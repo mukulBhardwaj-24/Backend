@@ -22,7 +22,7 @@ import subcriptionRouter from "./routes/subscriptions.routes.js"
 // route declaration
 
 app.use("/api/v1/users", userRouter);
-app.use("/", subcriptionRouter);
+app.use("/api/v1/subscriptions", subcriptionRouter);
 
 // https://localhost:8000/api/v1/users/register
 export { app }

@@ -9,7 +9,7 @@ const subscribeChannel = asyncHandler(async (req, res) => {
     const { channelId } = req.params;
     const subscriberId = req.user._id;
 
-    if (!mongoose.Types.ObjectId.isValid(channelId)) throw new ApiError(400, "Invalid channel ID");
+    if (!mongoose.Types.ObjectId.isValid(channelId)) throw new ApiError(400, "Invalid Channel Id");
 
     if (channelId === subscriberId.toString()) throw new ApiError(400, "You cannot subscribe to your own channel");
 
@@ -38,6 +38,38 @@ const subscribeChannel = asyncHandler(async (req, res) => {
 
 });
 
+const unsubscribeChannel = asyncHandler(async (req, res) => {
+
+    const { channelId } = req.params;
+    const subscriberId = req.user._id;
+
+    if(!mongoose.Types.ObjectId.isValid(channelId)) throw new ApiError(400, "Invalid Channel Id");
+
+    const channel = await User.findById(channelId);
+
+    if(!channel) throw new ApiError(404, "Channel Not Found");
+
+    await Subscription.findOneAndDelete({
+        subscriber : subscriberId,
+        channel : channelId
+    })
+
+    return res.status(200).json(new ApiResponse(200, {}, "Unsubscribed Successfully"));
+});
+
+const subscribedChannels = asyncHandler(async (req, res) => {
+
+    const subscriberId = req.user._id;
+
+    const subs = await Subscription.find({
+        subscriber : subscriberId
+    }).populate("channel", "username fullName avatar");
+
+    return res.status(200).json(new ApiResponse(200, subs, "Subscribed channels fetched successfully"));
+})
+
 export {
-    subscribeToChannel,
+    subscribeChannel,
+    unsubscribeChannel,
+    subscribedChannels
 };
