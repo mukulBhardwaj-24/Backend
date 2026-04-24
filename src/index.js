@@ -1,25 +1,21 @@
 // require('dotenv').config({path: './env'})
 import "./config/env.js"
 import connectDB from "./db/index.js";
-import {app} from "./app.js"
-
-console.log(process.env.PORT);
-console.log(process.env.CLOUDINARY_CLOUD_NAME);
-
+import { app } from "./app.js"
 
 connectDB()
-.then(() => {
-    app.listen(process.env.PORT || 8000, () => {
-        console.log(`Server is running on port: ${process.env.PORT}`)
+    .then(() => {
+        app.listen(process.env.PORT || 8000, () => {
+            console.log(`Server is running on port: ${process.env.PORT}`)
+        })
+        app.on("ERROR", (error) => {
+            console.log(error)
+            throw error
+        })
     })
-    app.on("ERROR", (error) => {
-        console.log(error)
-        throw error
+    .catch((error) => {
+        console.log("MONGO db connection failed !!! ", error)
     })
-})
-.catch((error) => {
-    console.log("MONGO db connection failed !!! ", error)
-})
 
 
 
