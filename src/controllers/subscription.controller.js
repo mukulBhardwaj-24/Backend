@@ -66,10 +66,57 @@ const subscribedChannels = asyncHandler(async (req, res) => {
     }).populate("channel", "username fullName avatar");
 
     return res.status(200).json(new ApiResponse(200, subs, "Subscribed channels fetched successfully"));
+});
+
+const getSubscribers = asyncHandler(async (req, res) => {
+    const channelId = req.user._id;
+
+    const subs = await Subscription.find({
+        channel : channelId
+    }).populate("subscriber", "username fullName avatar");
+
+    return res.status(200).json(new ApiResponse(200, subs, "Subscriber detail fetched successfully"));
+});
+
+const getSubscriptionStatus = asyncHandler(async (req, res) => {
+    const {channelId} = req.params;
+    const subscriberId = req.user._id;
+
+    if(!mongoose.Types.ObjectId.isValid(channelId)) throw new ApiError(400, "Invalid Channel Id");
+
+    const ch = await User.findById(channelId);
+
+    if(!ch) throw new ApiError(404, "Channel Not Found");
+
+    const exist = await Subscription.exists({
+        subscriber : subscriberId,
+        channel : channelId
+    });
+
+    return res.status(200).json(new ApiResponse(200, {isSubscribed : !!exist}, "Subscription status fetched successfully"));
+});
+
+const getChannelStats = asyncHandler(async (req, res) => {
+    const {channelId} = req.params;
+
+    if(!mongoose.Types.ObjectId.isValid(channelId)) throw new ApiError(400, "Invalid Channel Id");
+
+    const ch = await User.findById(channelId);
+
+    if(!ch) throw new ApiError(404, "Channel Not Found");
+
+    const count = await Subscription.countDocuments({
+        channel : channelId
+    });
+
+    return res.status(200).json(new ApiResponse(200, {subscriberCount : count}, "Channel stats fetched successfully"));
 })
 
 export {
     subscribeChannel,
     unsubscribeChannel,
-    subscribedChannels
+    subscribedChannels,
+    getSubscribers,
+    getSubscriptionStatus,
+    getChannelStats
 };
