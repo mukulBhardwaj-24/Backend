@@ -13,11 +13,14 @@ const videoSchema = new Schema(
         },
         title: {
             type: String,
-            required: true
+            required: true,
+            trim : true,
+            maxlength : [100, "Title cannot exceed 100 characters"]
         },
         description: {
             type: String,
-            required: true
+            trim : true,
+            maxlength : [10000, "Description cannot exceed 10000 characters"]
         },
         duration: {
             type: Number,
@@ -27,11 +30,11 @@ const videoSchema = new Schema(
             type: Number,
             default: 0
         },
-        isPublished: {
-            type: Boolean,
-            default: true
+        isPublished : {
+            type : Boolean,
+            default : false
         },
-        owner: {
+        uploadedBy: {
             type: Schema.Types.ObjectId,
             ref: "User"
         }
